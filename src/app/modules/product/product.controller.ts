@@ -45,7 +45,7 @@ const getAllProduct = async (req: Request, res: Response) => {
 const getSingleProductById = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    console.log(productId);
+
     const result = await ProductServices.getSingleProductFromDB(productId);
     res.status(200).json({
       success: true,
@@ -53,9 +53,34 @@ const getSingleProductById = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "product retrieved failed",
+      error: error,
+    });
+  }
+};
+
+// update product
+const updateProductById = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const updateProduct = req.body;
+
+    const result = await ProductServices.UpdateProductIntoDb(
+      productId,
+      updateProduct
+    );
+
     res.status(200).json({
       success: true,
-      message: "product retrieved successfully",
+      message: "product updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "product updated failed",
       error: error,
     });
   }
@@ -65,4 +90,5 @@ export const productController = {
   createProduct,
   getAllProduct,
   getSingleProductById,
+  updateProductById,
 };
