@@ -36,35 +36,19 @@ const createOrderIntoDB = async (payload: TOrder) => {
   return result;
 };
 
-// Middleware to ensure productId is an ObjectId or a product object
-// orderSchema.pre("save", function (next) {
-//     const order = this as TOrder & Document;
-//     if (
-//       !Types.ObjectId.isValid(order.productId) &&
-//       typeof order.productId !== "object"
-//     ) {
-//       return next(new Error("Invalid productId"));
-//     }
-//     next();
-//   });
+const getAllOrdersFromDB = async (email?: string) => {
+  const findQuery = email ? { email } : {};
 
-//   // Pre-remove hook to update product inventory
-//   orderSchema.pre("remove", async function (next) {
-//     const order = this as TOrder & Document;
+  const orders = await OrderModel.find(findQuery);
 
-//     try {
-//       const product = await mongoose.model("Product").findById(order.productId);
-//       if (product) {
-//         product.inventory.quantity += order.quantity;
-//         product.inventory.inStock = product.inventory.quantity > 0;
-//         await product.save();
-//       }
-//       next();
-//     } catch (error) {
-//       next(error);
-//     }
-//   });
+  if (orders.length === 0) {
+    throw CustomError("Order not found");
+  }
+
+  return orders;
+};
 
 export const orderServices = {
   createOrderIntoDB,
+  getAllOrdersFromDB,
 };
