@@ -25,7 +25,9 @@ const createProduct = async (req: Request, res: Response) => {
 
 const getAllProduct = async (req: Request, res: Response) => {
   try {
-    const result = await ProductServices.getAllProductFromDB();
+    const searchTerm = req.query.searchTerm as string | undefined; // Extract term and the rest of the query parameters
+
+    const result = await ProductServices.getAllProductFromDB(searchTerm);
 
     res.status(200).json({
       success: true,
@@ -69,7 +71,7 @@ const updateProductById = async (req: Request, res: Response) => {
 
     const result = await ProductServices.UpdateProductIntoDb(
       productId,
-      updateProduct
+      updateProduct,
     );
 
     res.status(200).json({
@@ -86,9 +88,31 @@ const updateProductById = async (req: Request, res: Response) => {
   }
 };
 
+// delete Product controller
+const deleteProductById = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+
+    const result = await ProductServices.deleteProduct(productId);
+
+    res.status(200).json({
+      success: true,
+      message: "product deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "product deleted failed",
+      error: error,
+    });
+  }
+};
+
 export const productController = {
   createProduct,
   getAllProduct,
   getSingleProductById,
   updateProductById,
+  deleteProductById,
 };

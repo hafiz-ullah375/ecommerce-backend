@@ -7,9 +7,24 @@ const createProductIntoDB = async (product: TProduct) => {
   return result;
 };
 // get all product
-const getAllProductFromDB = async () => {
-  const result = await ProductModel.find();
-  return result;
+const getAllProductFromDB = async (searchTerm?: string) => {
+  const findQuery = searchTerm
+    ? {
+        $or: [
+          { name: { $regex: searchTerm, $options: "i" } },
+          { description: { $regex: searchTerm, $options: "i" } },
+          { category: { $regex: searchTerm, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const products = await ProductModel.find(findQuery);
+
+  if (products.length === 0) {
+    throw Error("Product not found");
+  }
+
+  return products;
 };
 // get single product by id
 const getSingleProductFromDB = async (id: string) => {
@@ -20,14 +35,14 @@ const getSingleProductFromDB = async (id: string) => {
 // update product
 const UpdateProductIntoDb = async (
   id: string,
-  payload: Partial<TProduct>
+  payload: Partial<TProduct>,
 ): Promise<TProduct | null> => {
   const updatedProductData: Partial<TProduct> = { ...payload };
 
   const result = await ProductModel.findByIdAndUpdate(
     { _id: id },
     updatedProductData,
-    { new: true }
+    { new: true },
   );
   return result;
 };
