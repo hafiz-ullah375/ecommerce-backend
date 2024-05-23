@@ -19,9 +19,11 @@ git clone https://github.com/hafiz-ullah375/ecommerce-backend.git
 Before running the app, you need to install all dependencies. You can do this using either Yarn or npm.
 
 Using npm
+```sh
 npm install
-
+```
 Using npm
+
 npm install --legacy-peer-deps
 
 4. Add a .env File
