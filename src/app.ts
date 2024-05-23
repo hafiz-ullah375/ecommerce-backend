@@ -1,6 +1,8 @@
 import express, { Application } from "express";
 import cors from "cors";
 import { ProductRoutes } from "./app/modules/product/product.route";
+import { orderRouter } from "./app/modules/order/order.route";
+import { globalError } from "./app/shared/GlobalError";
 
 const app: Application = express();
 
@@ -10,6 +12,9 @@ app.use(cors());
 
 // product routes
 app.use("/", ProductRoutes);
-// app.use("/api", ProductRoutes);
 
+// order router
+app.use("/", orderRouter);
+
+app.use(globalError);
 export default app;
